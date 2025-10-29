@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hayato - Content Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+        }
+
+        .social-link {
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        .achievement-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero-pattern {
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        }
+
+        /* Added styles for YouTube video grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .video-card {
+            position: relative;
+            padding-bottom: 177.78%; /* 9:16 aspect ratio for Shorts */
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+
+        .video-card iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Added language toggle button styles */
+        .lang-toggle {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .lang-toggle:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .lang-toggle.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="#" class="text-2xl font-bold gradient-text">hayato</a>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#about" class="nav-link text-slate-300 hover:text-white" data-en="About" data-ja="自己紹介">自己紹介</a>
+                    <a href="#journey" class="nav-link text-slate-300 hover:text-white" data-en="Journey" data-ja="経歴">経歴</a>
+                    <a href="#content" class="nav-link text-slate-300 hover:text-white" data-en="Content" data-ja="コンテンツ">コンテンツ</a>
+                    <!-- Added YouTube Videos link -->
+                    <a href="#videos" class="nav-link text-slate-300 hover:text-white" data-en="Videos" data-ja="動画">動画</a>
+                    <a href="#contact" class="nav-link text-slate-300 hover:text-white" data-en="Contact" data-ja="お問い合わせ">お問い合わせ</a>
+                    <!-- Added language toggle buttons -->
+                    <div class="flex gap-2">
+                        <button onclick="switchLanguage('ja')" class="lang-toggle active px-3 py-1 rounded-lg text-sm font-medium" id="lang-ja">日本語</button>
+                        <button onclick="switchLanguage('en')" class="lang-toggle px-3 py-1 rounded-lg text-sm font-medium" id="lang-en">English</button>
+                    </div>
+                </div>
+                <button class="md:hidden text-slate-300" onclick="toggleMobileMenu()">
+                    <!-- Replaced emoji with SVG hamburger icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-pattern pt-32 pb-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-block mb-4 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full">
+                        <!-- Replaced emoji with SVG graduation cap icon -->
+                        <svg class="w-4 h-4 inline-block mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                        </svg>
+                        <span class="text-blue-400 text-sm font-medium" data-en="Student Creator" data-ja="学生クリエイター">学生クリエイター</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                        <span data-en="Hi, I'm " data-ja="こんにちは、">こんにちは、</span><span class="gradient-text">hayato</span><span data-en="" data-ja="です">です</span>
+                    </h1>
+                    <p class="text-xl text-slate-400 mb-8 leading-relaxed" data-en="A student creator exploring the world of content creation through TikTok and YouTube videos." data-ja="学生クリエイター。TikTokとYouTubeで動画を投稿しながら、コンテンツ制作の世界を探求しています。">
+                        学生クリエイター。TikTokとYouTubeで動画を投稿しながら、コンテンツ制作の世界を探求しています。
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#content" class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all" data-en="View My Content" data-ja="コンテンツを見る">
+                            コンテンツを見る
+                        </a>
+                        <a href="#contact" class="px-8 py-4 bg-slate-800 border border-slate-700 rounded-lg font-semibold hover:bg-slate-700 transition-all" data-en="Get in Touch" data-ja="お問い合わせ">
+                            お問い合わせ
+                        </a>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="card rounded-2xl p-8 text-center">
+                        <!-- Replaced emoji with SVG video camera icon -->
+                        <div class="w-48 h-48 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <svg class="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2" data-en="Content Creator" data-ja="コンテンツクリエイター">コンテンツクリエイター</h3>
+                        <p class="text-slate-400" data-en="Creating engaging videos for the world" data-ja="世界に向けて魅力的な動画を制作">世界に向けて魅力的な動画を制作</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center">
+                <span class="gradient-text" data-en="About Me" data-ja="自己紹介">自己紹介</span>
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="card rounded-xl p-8">
+                    <!-- Replaced emoji with SVG graduation cap icon -->
+                    <svg class="w-12 h-12 mb-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                    </svg>
+                    <h3 class="text-xl font-bold mb-3" data-en="Student" data-ja="学生">学生</h3>
+                    <p class="text-slate-400 leading-relaxed" data-en="Balancing studies with content creation. Growing and learning every day." data-ja="学業と並行してコンテンツ制作に取り組んでいます。学びながら成長する日々です。">
+                        学業と並行してコンテンツ制作に取り組んでいます。学びながら成長する日々です。
+                    </p>
+                </div>
+                <div class="card rounded-xl p-8">
+                    <!-- Replaced emoji with SVG smartphone icon -->
+                    <svg class="w-12 h-12 mb-4 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M7 2a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V4a2 2 0 00-2-2H7zm3 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                    </svg>
+                    <h3 class="text-xl font-bold mb-3" data-en="Social Media" data-ja="ソーシャルメディア">ソーシャルメディア</h3>
+                    <p class="text-slate-400 leading-relaxed" data-en="Posting videos on TikTok and YouTube. Valuing connections with viewers." data-ja="TikTokとYouTubeで動画を投稿。視聴者との繋がりを大切にしています。">
+                        TikTokとYouTubeで動画を投稿。視聴者との繋がりを大切にしています。
+                    </p>
+                </div>
+                <div class="card rounded-xl p-8">
+                    <!-- Replaced emoji with SVG scissors/edit icon -->
+                    <svg class="w-12 h-12 mb-4 text-pink-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                    </svg>
+                    <h3 class="text-xl font-bold mb-3" data-en="Video Editor" data-ja="動画編集者">動画編集者</h3>
+                    <p class="text-slate-400 leading-relaxed" data-en="Pursuing creative expression through video editing with CapCut." data-ja="CapCutを使った動画編集で、クリエイティブな表現を追求しています。">
+                        CapCutを使った動画編集で、クリエイティブな表現を追求しています。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journey Section -->
+    <section id="journey" class="py-20 px-6 bg-slate-900/50">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center">
+                <span class="gradient-text" data-en="My Journey" data-ja="経歴">経歴</span>
+            </h2>
+            <div class="space-y-8">
+                <div class="card rounded-xl p-8 flex gap-6">
+                    <div class="flex-shrink-0">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <!-- Replaced emoji with SVG rocket icon -->
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2" data-en="Started Content Creation" data-ja="コンテンツ制作を開始">コンテンツ制作を開始</h3>
+                        <p class="text-slate-400 mb-4" data-en="Started posting videos on TikTok and YouTube. It was the beginning of a new challenge." data-ja="TikTokとYouTubeでの動画投稿を開始。新しい挑戦の始まりでした。">TikTokとYouTubeでの動画投稿を開始。新しい挑戦の始まりでした。</p>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-sm text-blue-400">TikTok</span>
+                            <span class="px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded-full text-sm text-purple-400">YouTube</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card rounded-xl p-8 flex gap-6">
+                    <div class="flex-shrink-0">
+                        <div class="w-16 h-16 achievement-badge rounded-full flex items-center justify-center">
+                            <!-- Replaced emoji with SVG dollar sign icon -->
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2" data-en="First Earnings" data-ja="初収益">初収益</h3>
+                        <p class="text-slate-400 mb-4" data-en="Leveraged video editing skills with CapCut to achieve first earnings of $25. A small step that became great confidence." data-ja="CapCutでの動画編集スキルを活かし、初めての収益$25を達成。小さな一歩が大きな自信に。">CapCutでの動画編集スキルを活かし、初めての収益$25を達成。小さな一歩が大きな自信に。</p>
+                        <div class="inline-block px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-lg">
+                            <span class="text-green-400 font-bold text-lg" data-en="$25 Earned" data-ja="$25 獲得">$25 獲得</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card rounded-xl p-8 flex gap-6">
+                    <div class="flex-shrink-0">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                            <!-- Replaced emoji with SVG trending up icon -->
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2" data-en="Growing & Learning" data-ja="成長と学習">成長と学習</h3>
+                        <p class="text-slate-400 mb-4" data-en="Learning new things every day while improving content quality. Will continue to grow." data-ja="日々新しいことを学びながら、コンテンツの質を向上させています。これからも成長し続けます。">日々新しいことを学びながら、コンテンツの質を向上させています。これからも成長し続けます。</p>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded-full text-sm text-purple-400" data-en="Video Editing" data-ja="動画編集">動画編集</span>
+                            <span class="px-3 py-1 bg-pink-500/10 border border-pink-500/20 rounded-full text-sm text-pink-400" data-en="Content Strategy" data-ja="コンテンツ戦略">コンテンツ戦略</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section id="content" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center">
+                <span class="gradient-text" data-en="My Content" data-ja="コンテンツ">コンテンツ</span>
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- TikTok Card -->
+                <a href="https://www.tiktok.com/@ha7554" target="_blank" class="card rounded-2xl p-8 block group">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                            <!-- Replaced emoji with SVG smartphone icon -->
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7 2a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V4a2 2 0 00-2-2H7zm3 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold">TikTok</h3>
+                            <p class="text-slate-400">@ha7554</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 mb-6 leading-relaxed" data-en="Pursuing creative expression through short-form videos. Establishing a unique style while incorporating trends." data-ja="短編動画でクリエイティブな表現を追求。トレンドを取り入れながら、独自のスタイルを確立しています。">
+                        短編動画でクリエイティブな表現を追求。トレンドを取り入れながら、独自のスタイルを確立しています。
+                    </p>
+                    <div class="flex items-center gap-2 text-blue-400 group-hover:gap-4 transition-all">
+                        <span class="font-semibold" data-en="Visit Profile" data-ja="プロフィールを見る">プロフィールを見る</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- YouTube Card -->
+                <a href="https://m.youtube.com/@hayato-buzz/shorts" target="_blank" class="card rounded-2xl p-8 block group">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center">
+                            <!-- Replaced emoji with SVG play icon -->
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold">YouTube</h3>
+                            <p class="text-slate-400">@hayato-buzz</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 mb-6 leading-relaxed" data-en="Delivering engaging content on YouTube Shorts. Passionate about creating videos that entertain viewers." data-ja="YouTube Shortsで魅力的なコンテンツを配信。視聴者を楽しませる動画作りに情熱を注いでいます。">
+                        YouTube Shortsで魅力的なコンテンツを配信。視聴者を楽しませる動画作りに情熱を注いでいます。
+                    </p>
+                    <div class="flex items-center gap-2 text-blue-400 group-hover:gap-4 transition-all">
+                        <span class="font-semibold" data-en="Watch Videos" data-ja="動画を見る">動画を見る</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="card rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold gradient-text mb-2">2</div>
+                    <div class="text-slate-400 text-sm" data-en="Platforms" data-ja="プラットフォーム">プラットフォーム</div>
+                </div>
+                <div class="card rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold gradient-text mb-2">$25</div>
+                    <div class="text-slate-400 text-sm" data-en="First Earnings" data-ja="初収益">初収益</div>
+                </div>
+                <div class="card rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold gradient-text mb-2">∞</div>
+                    <div class="text-slate-400 text-sm" data-en="Creativity" data-ja="創造性">創造性</div>
+                </div>
+                <div class="card rounded-xl p-6 text-center">
+                    <!-- Replaced emoji with SVG trending up icon -->
+                    <svg class="w-8 h-8 mx-auto mb-2 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"/>
+                    </svg>
+                    <div class="text-slate-400 text-sm" data-en="Growing" data-ja="成長中">成長中</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Added YouTube Videos Section with automatic video loading -->
+    <section id="videos" class="py-20 px-6 bg-slate-900/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center">
+                <span class="gradient-text" data-en="Latest Videos" data-ja="最新動画">最新動画</span>
+            </h2>
+            <p class="text-center text-slate-400 mb-12" data-en="Check out my latest YouTube Shorts" data-ja="最新のYouTube Shortsをチェック">最新のYouTube Shortsをチェック</p>
+            
+            <div id="youtube-videos" class="video-grid">
+                <!-- Videos will be loaded here dynamically -->
+                <div class="text-center col-span-full text-slate-400">
+                    <svg class="w-12 h-12 mx-auto mb-4 animate-spin text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    <p data-en="Loading videos..." data-ja="動画を読み込み中...">動画を読み込み中...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                <span class="gradient-text" data-en="Let's Connect" data-ja="お問い合わせ">お問い合わせ</span>
+            </h2>
+            <p class="text-xl text-slate-400 mb-12 leading-relaxed" data-en="Feel free to reach out for collaborations or questions. Let's create amazing content together!" data-ja="コラボレーションやご質問など、お気軽にご連絡ください。一緒に素晴らしいコンテンツを作りましょう！">
+                コラボレーションやご質問など、お気軽にご連絡ください。<br>
+                一緒に素晴らしいコンテンツを作りましょう！
+            </p>
+            
+            <div class="flex justify-center gap-6 mb-12">
+                <a href="https://www.tiktok.com/@ha7554" target="_blank" class="social-link w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center hover:shadow-lg hover:shadow-pink-500/50">
+                    <!-- Replaced emoji with SVG smartphone icon -->
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M7 2a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V4a2 2 0 00-2-2H7zm3 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                    </svg>
+                </a>
+                <a href="https://m.youtube.com/@hayato-buzz/shorts" target="_blank" class="social-link w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center hover:shadow-lg hover:shadow-red-500/50">
+                    <!-- Replaced emoji with SVG play icon -->
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="card rounded-2xl p-8 inline-block">
+                <p class="text-slate-300 mb-4" data-en="Follow me on social media to stay updated!" data-ja="SNSをフォローして最新情報をチェック！">SNSをフォローして最新情報をチェック！</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400">TikTok: @ha7554</span>
+                    <span class="px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-lg text-purple-400">YouTube: @hayato-buzz</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto text-center">
+            <p class="text-slate-400" data-en="© 2025 hayato. Created with passion for content creation." data-ja="© 2025 hayato. コンテンツ制作への情熱を込めて。">
+                © 2025 hayato. 
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        let currentLang = 'ja';
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-en]').forEach(el => {
+                if (el.hasAttribute('data-' + lang)) {
+                    el.textContent = el.getAttribute('data-' + lang);
+                }
+            });
+
+            // Update language toggle buttons
+            document.getElementById('lang-ja').classList.toggle('active', lang === 'ja');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+
+        async function loadYouTubeVideos() {
+            const channelId = 'UCYourChannelId'; // This would need the actual channel ID
+            const videoContainer = document.getElementById('youtube-videos');
+            
+            // Sample video IDs - In production, these would be fetched from YouTube API
+            // For now, we'll create a manual list that can be updated
+            const sampleVideoIds = [
+                // Add your YouTube Shorts video IDs here
+                // Example: 'dQw4w9WgXcQ'
+            ];
+
+            // If no videos are configured, show a message
+            if (sampleVideoIds.length === 0) {
+                videoContainer.innerHTML = `
+                    <div class="col-span-full text-center">
+                        <div class="card rounded-xl p-12">
+                            <svg class="w-16 h-16 mx-auto mb-4 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                            </svg>
+                            <h3 class="text-xl font-bold mb-2" data-en="Videos Coming Soon" data-ja="動画は近日公開">動画は近日公開</h3>
+                            <p class="text-slate-400 mb-6" data-en="Check out my YouTube channel for the latest content!" data-ja="最新のコンテンツはYouTubeチャンネルでチェック！">最新のコンテンツはYouTubeチャンネルでチェック！</p>
+                            <a href="https://m.youtube.com/@hayato-buzz/shorts" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-red-500/50 transition-all">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                                </svg>
+                                <span data-en="Visit YouTube Channel" data-ja="YouTubeチャンネルを見る">YouTubeチャンネルを見る</span>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Load videos
+            videoContainer.innerHTML = sampleVideoIds.map(videoId => `
+                <div class="card rounded-xl overflow-hidden">
+                    <div class="video-card">
+                        <iframe 
+                            src="https://www.youtube.com/embed/${videoId}" 
+                            title="YouTube video player" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('nav .hidden');
+            if (navLinks) {
+                navLinks.classList.toggle('hidden');
+                navLinks.classList.toggle('flex');
+            }
+        }
+
+        // Load videos when page loads
+        window.addEventListener('load', loadYouTubeVideos);
+    </script>
+</body>
+</html>
